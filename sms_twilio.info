@@ -1,0 +1,13 @@
+; $Id: sms_twilio.info,v 1.1 2010/10/03 07:12:19 univate Exp $
+name = "Twilio"
+description = "Allows the SMS Framework to use twilio.com as a gateway."
+package = SMS Framework
+dependencies[] = sms
+core = 6.x
+
+; Information added by drupal.org packaging script on 2010-10-03
+version = "6.x-1.0"
+core = "6.x"
+project = "sms_twilio"
+datestamp = "1286091064"
+
