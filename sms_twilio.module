@@ -104,11 +104,13 @@ function sms_twilio_send($number, $message, $options) {
   $number = preg_replace("/[^0-9]/", '', $number);
   $number = trim($number);
   $number = ltrim($number, '0'); // Remove leading zeros
-  $index = strpos($number, $options['country']);
-  if ($index === FALSE || $index > 0) {
-    $number = $options['country'] . $number;
+  if (isset($options['country'])) {
+    $index = strpos($number, $options['country']);
+    if ($index === FALSE || $index > 0) {
+      $number = $options['country'] . $number;
+    }
   }
-  return sms_twilio_command('sendmsg', array('number' => $number, 'message' => $message), NULL, $account);
+  return sms_twilio_command('sendmsg', array('number' => $number, 'message' => $message), NULL, NULL);
 }
 
 /**
@@ -416,7 +418,7 @@ function sms_twilio_incoming() {
     foreach ($_POST as $key => $value) {
       $string_to_sign .= $key . $value;
     }
-    $sig = base64_encode(hash_hmac("sha1", $string_to_sign, $config['sms_twilio_api_auth_token'], true));
+    $sig = base64_encode(hash_hmac("sha1", $string_to_sign, $config['sms_twilio_api_auth_token'], TRUE));
 
     $from = $_REQUEST['From'];
     $body = $_REQUEST['Body'];

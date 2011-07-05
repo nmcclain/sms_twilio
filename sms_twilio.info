@@ -1,7 +1,7 @@
 ; $Id$
-name = "Twilio"
+name = "SMS Twilio"
 description = "Allows the SMS Framework to use twilio.com as a gateway."
-package = SMS Framework
+package = "SMS Framework"
 dependencies[] = sms
 core = 7.x
 version = "7.x-1.x-dev"
