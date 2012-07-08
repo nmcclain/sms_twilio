@@ -1,9 +1,3 @@
-I'm using this repo to track my changes to the Drupal sms_twilio module. 
-See: http://drupal.org/node/988396
-
-ned@appliedtrust.com
-
-#####
 sms_twilio
 ~~~~~~~~~~
 
