@@ -1,0 +1,110 @@
+diff --git a/README.txt b/README.txt
+index a4d4f3e..1d9d4da 100644
+--- a/README.txt
++++ b/README.txt
+@@ -6,7 +6,7 @@ sms_twilio is a drupal module to add the twilio.com gateway to the sms framework
+ INSTALL
+ ~~~~~~~
+ 
+-1. Download the twilio PHP library http://www.twilio.com/docs/libraries/ and unzip into sites/all/libraries (this path can be edited when setting up the gateway).
++1. Download the twilio PHP library (2010-04-01 or 2008-08-01) http://www.twilio.com/docs/libraries/ and unzip into sites/all/libraries (this path can be edited when setting up the gateway).
+ 
+ 2. See the getting started guild on installing drupal modules:
+ http://drupal.org/getting-started/install-contrib/modules
+diff --git a/sms_twilio.module b/sms_twilio.module
+index 20c61cb..5f38e38 100755
+--- a/sms_twilio.module
++++ b/sms_twilio.module
+@@ -1,5 +1,7 @@
+ <?php
+ 
++define('DEFAULT_TWILIO_API_VERSION', '2010-04-01');
++
+ /**
+  * @file
+  * Adds support for sending SMS messages using the Twilio gateway.
+@@ -56,6 +58,13 @@ function sms_twilio_admin_form($configuration) {
+     '#maxlength' => 255,
+     '#default_value' => !empty($configuration['sms_twilio_path']) ? $configuration['sms_twilio_path'] : 'sites/all/libraries/twilio',
+   );
++  $form['sms_twilio_api'] = array(
++    '#type' => 'radios',
++    '#title' => t('Twilio API Version'),
++    '#description' => t('The version of the above path to use for the Twilio API'),
++    '#options' => array('2008-08-01'=>'2008-08-01', '2010-04-01'=>'2010-04-01'),
++    '#default_value' => !empty($configuration['sms_twilio_api']) ? $configuration['sms_twilio_api'] : DEFAULT_TWILIO_API_VERSION,
++  );
+   return $form;
+ }
+ 
+@@ -104,29 +113,55 @@ function sms_twilio_command($command = 'auth', $data = array(), $config = NULL,
+     $config = $gateway['configuration'];
+   }
+ 
+-  // Include the PHP TwilioRest library
+-  require_once DRUPAL_ROOT . '/' . $config['sms_twilio_path'] . '/twilio.php';
+-
+   // Twilio REST API version
+-  $ApiVersion = "2008-08-01";
++  $ApiVersion = isset($config['sms_twilio_api']) && $config['sms_twilio_api'] ? $config['sms_twilio_api'] : DEFAULT_TWILIO_API_VERSION;
+ 
+   // Set our AccountSid and AuthToken
+   $AccountSid = $config['sms_twilio_api_sid'];
+   $AuthToken = $config['sms_twilio_api_auth_token'];
+ 
+   // Instantiate a new Twilio Rest Client
+-  $client = new TwilioRestClient($AccountSid, $AuthToken);
+-
+-  switch ($command) {
+-    case 'sendmsg':
+-      // Check if the message requires unicode handling
+-      $response = $client->request("/$ApiVersion/Accounts/$AccountSid/SMS/Messages",
+-        "POST", array(
+-        "To" => $data['number'],
+-        "From" => $config['sms_twilio_number'],
+-        "Body" => $data['message'],
+-      ));
++  switch($ApiVersion) {
++    case '2010-04-01':
++      // Include the PHP TwilioRest library
++      require_once DRUPAL_ROOT . '/' . $config['sms_twilio_path'] . '/Services/Twilio.php';
++      $client = new Services_Twilio($AccountSid, $AuthToken);
++
++      switch ($command) {
++        case 'sendmsg':
++          $response  = $client->account->sms_messages->create(
++            $config['sms_twilio_number'],
++            $data['number'],
++            $data['message']
++          );
++          break;
++      }
+       break;
++    case '2008-08-01':
++      // Include the PHP TwilioRest library
++      require_once DRUPAL_ROOT . '/' . $config['sms_twilio_path'] . '/twilio.php';
++
++      $client = new TwilioRestClient($AccountSid, $AuthToken);
++
++      switch ($command) {
++        case 'sendmsg':
++          $response = $client->request("/$ApiVersion/Accounts/$AccountSid/SMS/Messages",
++            "POST", array(
++            "To" => $data['number'],
++            "From" => $config['sms_twilio_number'],
++            "Body" => $data['message'],
++          ));
++          break;
++      }
++     
++      break;
++    default:
++      $result = array(
++        'status' => FALSE,
++        'message' => t('Invalid Twilio API: @api', array('@api', $ApiVersion)),
++      );
++      return $result;
++
+   }
+   watchdog('sms_twilio', print_r($response, TRUE));
+   // Check for HTTP errors
