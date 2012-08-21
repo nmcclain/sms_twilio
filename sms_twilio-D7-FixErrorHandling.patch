@@ -1,0 +1,22 @@
+diff --git a/sms_twilio.module b/sms_twilio.module
+index 5f38e38..d82acf4 100755
+--- a/sms_twilio.module
++++ b/sms_twilio.module
+@@ -165,11 +165,16 @@ function sms_twilio_command($command = 'auth', $data = array(), $config = NULL,
+   }
+   watchdog('sms_twilio', print_r($response, TRUE));
+   // Check for HTTP errors
+-  if ($response->IsError) {
++  if (($ApiVersion == '2008-08-01') and ($response->IsError)) {
+     $result = array(
+       'status' => FALSE,
+       'message' => t('An error occured during the HTTP request: @error', array('@error' => $response->ErrorMessage)),
+     );
++  } else if (($ApiVersion == '2010-04-01') and ($response->status == 'failed')) {
++    $result = array(
++      'status' => FALSE,
++      'message' => t('An error occured during the HTTP request'),
++    );
+   }
+   else {
+     $result = array(
