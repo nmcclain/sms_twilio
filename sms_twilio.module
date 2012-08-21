@@ -127,7 +127,6 @@ function sms_twilio_command($command = 'auth', $data = array(), $config = NULL, 
       require_once DRUPAL_ROOT . '/' . $config['sms_twilio_path'] . '/Services/Twilio.php';
       $client = new Services_Twilio($AccountSid, $AuthToken);
 
-
       switch ($command) {
         case 'sendmsg':
           $response  = $client->account->sms_messages->create(
@@ -166,12 +165,7 @@ function sms_twilio_command($command = 'auth', $data = array(), $config = NULL, 
   }
   watchdog('sms_twilio', print_r($response, TRUE));
   // Check for HTTP errors
-  if (($ApiVersion == '2010-04-01') and ($response->status == 'failed')) {
-    $result = array(
-      'status' => FALSE,
-      'message' => t('An error occured during the HTTP request'),
-    );
-  } else if (($ApiVersion == '2008-08-01') and ($response->IsError)) {
+  if ($response->IsError) {
     $result = array(
       'status' => FALSE,
       'message' => t('An error occured during the HTTP request: @error', array('@error' => $response->ErrorMessage)),
