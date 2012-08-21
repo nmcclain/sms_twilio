@@ -1,10 +1,14 @@
-; $Id$
 name = "Twilio"
 description = "Allows the SMS Framework to use twilio.com as a gateway."
 package = SMS Framework
 dependencies[] = sms
 core = 7.x
-version = "7.x-1.x-dev"
-project = "sms_twilio"
 
 files[] = sms_twilio.module
+
+; Information added by drupal.org packaging script on 2012-08-03
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "sms_twilio"
+datestamp = "1343954955"
+

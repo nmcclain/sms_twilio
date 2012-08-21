@@ -1,9 +1,3 @@
-I'm using this repo to track my changes to the Drupal sms_twilio module. 
-See: http://drupal.org/node/988396
-
-ned@appliedtrust.com
-
-#####
 sms_twilio
 ~~~~~~~~~~
 
@@ -12,7 +6,7 @@ sms_twilio is a drupal module to add the twilio.com gateway to the sms framework
 INSTALL
 ~~~~~~~
 
-1. Download the twilio PHP library http://www.twilio.com/docs/libraries/ and unzip into sites/all/libraries (this path can be edited when setting up the gateway).
+1. Download the twilio PHP library (2010-04-01 or 2008-08-01) http://www.twilio.com/docs/libraries/ and unzip into sites/all/libraries (this path can be edited when setting up the gateway).
 
 2. See the getting started guild on installing drupal modules:
 http://drupal.org/getting-started/install-contrib/modules
