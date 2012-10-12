@@ -227,7 +227,7 @@ function sms_twilio_incoming() {
       watchdog('sms_twilio', 'Incoming sms from @from has a bad Twilio signature - dropping!', array('@from' => $from), WATCHDOG_WARNING);
     }
     else {
-      // watchdog('sms_twilio', 'Handling incoming sms from '.$from.': '.$body);
+      watchdog('sms_twilio', 'Handling incoming sms from '.$from.': '.$body);
       $opts = array();
       $opts['to'] = $_REQUEST['To'];
       $opts['fromcountry'] = $_REQUEST['FromCountry'];
@@ -237,5 +237,12 @@ function sms_twilio_incoming() {
       sms_incoming($from, $body, $opts);
     }
   }
+}
+
+function sms_twilio_token_info_alter(&$info) {
+  $info['tokens']['sms']['to'] = array(
+    'name' => t("To"), 
+    'description' => t("The number the SMS was sent to"),
+  );
 }
 

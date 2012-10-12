@@ -5,6 +5,8 @@ dependencies[] = sms
 core = 7.x
 
 files[] = sms_twilio.module
+files[] = sms_twilio.rules.inc
+files[] = sms_twilio.tokens.inc
 
 ; Information added by drupal.org packaging script on 2012-08-03
 version = "7.x-1.x-dev"
