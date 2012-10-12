@@ -239,10 +239,3 @@ function sms_twilio_incoming() {
   }
 }
 
-function sms_twilio_token_info_alter(&$info) {
-  $info['tokens']['sms']['to'] = array(
-    'name' => t("To"), 
-    'description' => t("The number the SMS was sent to"),
-  );
-}
-
